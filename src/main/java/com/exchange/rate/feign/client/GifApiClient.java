@@ -1,4 +1,4 @@
-package com.exchange.rate.feign.service;
+package com.exchange.rate.feign.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Map;
 
-@FeignClient(name = "gif-service", url = "${base.gif.service.url}")
-public interface GifServiceProxy {
+@FeignClient(name = "gif-api-service", url = "${base.api.gif.service.url}")
+public interface GifApiClient {
 
-    String GIF_PATH = "?api_key=" + "${giphy.api.key}" + "&tag=" + "{tag}";
-
-    @GetMapping(GIF_PATH)
+    @GetMapping("?api_key=${giphy.api.key}&tag={tag}")
     Map<String, Object> getGifByTag(@PathVariable String tag);
 }
