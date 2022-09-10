@@ -5,7 +5,6 @@ import com.exchange.rate.feign.client.GifApiClient;
 import com.exchange.rate.feign.client.GifClient;
 import com.exchange.rate.feign.model.entity.CurrencyRate;
 import com.exchange.rate.feign.model.exception.FileNotFoundException;
-import com.exchange.rate.feign.model.service.CurrencyValidator;
 import com.exchange.rate.feign.model.service.GifService;
 import lombok.AllArgsConstructor;
 
