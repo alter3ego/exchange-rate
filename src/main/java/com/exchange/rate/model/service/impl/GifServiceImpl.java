@@ -1,11 +1,11 @@
-package com.exchange.rate.feign.model.service.impl;
+package com.exchange.rate.model.service.impl;
 
-import com.exchange.rate.feign.client.CurrencyRateClient;
-import com.exchange.rate.feign.client.GifApiClient;
-import com.exchange.rate.feign.client.GifClient;
-import com.exchange.rate.feign.model.entity.CurrencyRate;
-import com.exchange.rate.feign.model.exception.FileNotFoundException;
-import com.exchange.rate.feign.model.service.GifService;
+import com.exchange.rate.client.CurrencyRateClient;
+import com.exchange.rate.client.GifApiClient;
+import com.exchange.rate.client.GifClient;
+import com.exchange.rate.model.entity.CurrencyRate;
+import com.exchange.rate.model.exception.FileNotFoundException;
+import com.exchange.rate.model.service.GifService;
 import lombok.AllArgsConstructor;
 
 import org.apache.commons.io.IOUtils;
@@ -29,14 +29,14 @@ public class GifServiceImpl implements GifService {
     private final CurrencyRateClient currencyProxy;
     private final GifApiClient gifApiProxy;
     private final GifClient gifProxy;
-    private final StringValidator stringValidator;
+    private final CurrencyValidator currencyValidator;
 
     @Value("${currencies}")
     private List<String> currencies;
 
     @Override
     public byte[] getGifByCurrency(String currency) {
-        if (!stringValidator.checkString(currency, currencies)) {
+        if (!currencyValidator.checkString(currency)) {
             return getWrongGif();
         }
 

@@ -1,4 +1,4 @@
-package com.exchange.rate.feign.model.entity;
+package com.exchange.rate.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

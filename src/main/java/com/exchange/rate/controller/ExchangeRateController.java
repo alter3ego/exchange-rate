@@ -1,6 +1,6 @@
-package com.exchange.rate.feign.controller;
+package com.exchange.rate.controller;
 
-import com.exchange.rate.feign.model.service.GifService;
+import com.exchange.rate.model.service.GifService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

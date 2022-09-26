@@ -1,6 +1,6 @@
-package com.exchange.rate.feign.client;
+package com.exchange.rate.client;
 
-import com.exchange.rate.feign.model.entity.CurrencyRate;
+import com.exchange.rate.model.entity.CurrencyRate;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

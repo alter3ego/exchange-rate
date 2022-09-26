@@ -1,4 +1,4 @@
-package com.exchange.rate.feign.model.service;
+package com.exchange.rate.model.service;
 
 public interface GifService {
     byte[] getGifByCurrency(String currency);

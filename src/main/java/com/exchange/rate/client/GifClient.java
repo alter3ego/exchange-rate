@@ -1,4 +1,4 @@
-package com.exchange.rate.feign.client;
+package com.exchange.rate.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

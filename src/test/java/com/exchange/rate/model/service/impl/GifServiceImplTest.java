@@ -1,9 +1,9 @@
-package com.exchange.rate.feign.model.service.impl;
+package com.exchange.rate.model.service.impl;
 
-import com.exchange.rate.feign.client.CurrencyRateClient;
-import com.exchange.rate.feign.client.GifApiClient;
-import com.exchange.rate.feign.client.GifClient;
-import com.exchange.rate.feign.model.entity.CurrencyRate;
+import com.exchange.rate.client.CurrencyRateClient;
+import com.exchange.rate.client.GifApiClient;
+import com.exchange.rate.client.GifClient;
+import com.exchange.rate.model.entity.CurrencyRate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,11 +30,11 @@ class GifServiceImplTest {
     @Mock
     GifClient gifProxy;
     @Mock
-    StringValidator stringValidator;
+    CurrencyValidator currencyValidator;
 
     @Test
     void getGifByCurrencyTest() {
-        when(stringValidator.checkString(anyString(), any())).thenReturn(true);
+        when(currencyValidator.checkString(anyString())).thenReturn(true);
 
         Map<String, Double> rateMap = new HashMap<>();
         rateMap.put("USD", 12.0);

@@ -1,4 +1,4 @@
-package com.exchange.rate.feign;
+package com.exchange.rate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

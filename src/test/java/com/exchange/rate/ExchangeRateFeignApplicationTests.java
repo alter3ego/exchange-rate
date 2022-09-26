@@ -1,4 +1,4 @@
-package com.exchange.rate.feign;
+package com.exchange.rate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
