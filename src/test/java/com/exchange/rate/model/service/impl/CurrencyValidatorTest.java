@@ -1,5 +1,6 @@
 package com.exchange.rate.model.service.impl;
 
+import com.exchange.rate.ExchangeRateFeignApplication;
 import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.model.entity.CurrencyRate;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,36 +12,23 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.TestPropertySource;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CurrencyValidatorTest")
-@TestPropertySource("classpath:api.properties")
-@Component
 class CurrencyValidatorTest {
-    @Autowired
-    private Environment env;
-
-    @Value("base.exchange.service.url")
-    private String ss;
-
-    @Value("#{'${currencies}'.split(', ')}")
-    private List<String> myList;
-
     @Mock
     CurrencyRateClient currencyProxy;
 
@@ -48,7 +36,7 @@ class CurrencyValidatorTest {
 
     @BeforeEach
     void init() {
-        Mockito.when(currencyProxy.getCurrentRates()).thenReturn(currencyRateProvider());
+        when(currencyProxy.getCurrentRates()).thenReturn(currencyRateProvider());
         currencyValidator = new CurrencyValidator(currencyProxy);
     }
 
@@ -69,12 +57,20 @@ class CurrencyValidatorTest {
     }
 
     @Test
-    void test() {
-        System.out.println(ss);
-        System.out.println(env.getProperty("base.exchange.service.url"));
-       /* String currencies = env.getProperty("currencies");
-        String s = currencyListProvider().toString();
-        Assertions.assertEquals(currencies, s);*/
+    void shouldSuccessfullyComparedCurrenciesPropertyAndCurrencyList() {
+        Properties prop = new Properties();
+        try {
+            prop.load(ExchangeRateFeignApplication.class.getClassLoader().getResourceAsStream("api.properties"));
+            String expected = prop.getProperty("currencies");
+            String currenciesList = currencyListProvider().toString();
+            String actual = currenciesList.substring(1, currenciesList.length() - 1);
+            
+            assertEquals(expected, actual);
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private static Stream<Arguments> testCases() {
