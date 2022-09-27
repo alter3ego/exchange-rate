@@ -1,6 +1,5 @@
 package com.exchange.rate.model.service.impl;
 
-import com.exchange.rate.ExchangeRateFeignApplication;
 import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.model.entity.CurrencyRate;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,20 +56,15 @@ class CurrencyValidatorTest {
     }
 
     @Test
-    void shouldSuccessfullyComparedCurrenciesPropertyAndCurrencyList() {
+    @DisplayName("should successfully compared currencies property and currencyList")
+    void shouldSuccessfullyComparedCurrenciesPropertyAndCurrencyList() throws IOException {
         Properties prop = new Properties();
-        try {
-            prop.load(ExchangeRateFeignApplication.class.getClassLoader().getResourceAsStream("api.properties"));
-            String expected = prop.getProperty("currencies");
-            String currenciesList = currencyListProvider().toString();
-            String actual = currenciesList.substring(1, currenciesList.length() - 1);
-            
-            assertEquals(expected, actual);
-        }
-        catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        prop.load(CurrencyValidator.class.getClassLoader().getResourceAsStream("api.properties"));
+        String expected = prop.getProperty("currencies");
+        String currenciesList = currencyListProvider().toString();
+        String actual = currenciesList.substring(1, currenciesList.length() - 1);
 
+        assertEquals(expected, actual);
     }
 
     private static Stream<Arguments> testCases() {
