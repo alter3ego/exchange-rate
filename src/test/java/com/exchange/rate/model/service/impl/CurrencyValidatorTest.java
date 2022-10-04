@@ -55,18 +55,6 @@ class CurrencyValidatorTest {
         assertFalse(actual);
     }
 
-    @Test
-    @DisplayName("should successfully compared currencies property and currencyList")
-    void shouldSuccessfullyComparedCurrenciesPropertyAndCurrencyList() throws IOException {
-        Properties prop = new Properties();
-        prop.load(CurrencyValidator.class.getClassLoader().getResourceAsStream("api.properties"));
-        String expected = prop.getProperty("currencies");
-        String currenciesList = currencyListProvider().toString();
-        String actual = currenciesList.substring(1, currenciesList.length() - 1);
-
-        assertEquals(expected, actual);
-    }
-
     private static Stream<Arguments> testCases() {
         return Stream.of(
                 Arguments.of("correct currency UAH", "UAH"),
