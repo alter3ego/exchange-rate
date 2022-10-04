@@ -9,7 +9,6 @@ import com.exchange.rate.model.service.GifService;
 import lombok.AllArgsConstructor;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -30,9 +28,6 @@ public class GifServiceImpl implements GifService {
     private final GifApiClient gifApiProxy;
     private final GifClient gifProxy;
     private final CurrencyValidator currencyValidator;
-
-    @Value("${currencies}")
-    private List<String> currencies;
 
     @Override
     public byte[] getGifByCurrency(String currency) {
@@ -74,7 +69,7 @@ public class GifServiceImpl implements GifService {
         return formatter.format(myDate);
     }
 
-    private byte[] getWrongGif() {
+    public static byte[] getWrongGif() {
         try {
             InputStream in = new ClassPathResource(WRONG_GIF).getInputStream();
             return IOUtils.toByteArray(in);
