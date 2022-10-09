@@ -4,15 +4,13 @@ import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
+import com.exchange.rate.util.FileManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import org.mockito.MockedStatic;
-
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashMap;
@@ -33,6 +31,8 @@ class GifServiceImplTest {
     @InjectMocks
     GifServiceImpl gitService;
     @Mock
+    FileManager fileManager;
+    @Mock
     CurrencyRateClient currencyProxy;
     @Mock
     GifApiClient gifApiProxy;
@@ -45,13 +45,9 @@ class GifServiceImplTest {
     @DisplayName("should return expected for incorrect gif when validation failed")
     void shouldReturnExpectedForIncorrectGifWhenValidationFailed() {
         when(currencyValidator.checkString(anyString())).thenReturn(false);
+        when(fileManager.readFileAsByteArray(anyString())).thenReturn(expectedForIncorrect);
 
-        byte[] actual;
-        try (MockedStatic<GifServiceImpl> utilities = Mockito.mockStatic(GifServiceImpl.class)) {
-            utilities.when(GifServiceImpl::getWrongGif)
-                    .thenReturn(expectedForIncorrect);
-            actual = gitService.getGifByCurrency("USD");
-        }
+        byte[] actual = gitService.getGifByCurrency("USD");
 
         assertArrayEquals(expectedForIncorrect, actual);
     }

@@ -4,16 +4,12 @@ import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
-import com.exchange.rate.model.exception.FileNotFoundException;
 import com.exchange.rate.model.service.GifService;
+import com.exchange.rate.util.FileManager;
 import lombok.AllArgsConstructor;
 
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -24,6 +20,7 @@ import java.util.Map;
 @Service
 public class GifServiceImpl implements GifService {
     private static final String WRONG_GIF = "static/wrong.gif";
+    private final FileManager fileManager;
     private final CurrencyRateClient currencyProxy;
     private final GifApiClient gifApiProxy;
     private final GifClient gifProxy;
@@ -32,7 +29,7 @@ public class GifServiceImpl implements GifService {
     @Override
     public byte[] getGifByCurrency(String currency) {
         if (!currencyValidator.checkString(currency)) {
-            return getWrongGif();
+            return fileManager.readFileAsByteArray(WRONG_GIF);
         }
 
         Double different = currencyDifference(currency);
@@ -67,14 +64,5 @@ public class GifServiceImpl implements GifService {
         Date myDate = Date.from(yesterday);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(myDate);
-    }
-
-    public static byte[] getWrongGif() {
-        try {
-            InputStream in = new ClassPathResource(WRONG_GIF).getInputStream();
-            return IOUtils.toByteArray(in);
-        } catch (IOException e) {
-            throw new FileNotFoundException("Access error to wrong.gif", e);
-        }
     }
 }
