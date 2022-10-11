@@ -1,30 +1,38 @@
 package com.exchange.rate.model.service.impl;
 
-import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
+import com.exchange.rate.model.service.CurrencyService;
 import com.exchange.rate.model.service.GifService;
 import com.exchange.rate.util.FileManager;
-import lombok.AllArgsConstructor;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.Map;
 
-@AllArgsConstructor
 @Service
 public class GifServiceImpl implements GifService {
     private static final String WRONG_GIF = "static/wrong.gif";
     private final FileManager fileManager;
-    private final CurrencyRateClient currencyProxy;
     private final GifApiClient gifApiProxy;
     private final GifClient gifProxy;
     private final CurrencyValidator currencyValidator;
+    private final CurrencyService currencyService;
+    private CurrencyRate currentRates;
+    private CurrencyRate yesterdayRates;
+
+    public GifServiceImpl(FileManager fileManager, GifApiClient gifApiProxy, GifClient gifProxy,
+                          CurrencyValidator currencyValidator, CurrencyService currencyService) {
+        this.fileManager = fileManager;
+        this.gifApiProxy = gifApiProxy;
+        this.gifProxy = gifProxy;
+        this.currencyValidator = currencyValidator;
+        this.currencyService = currencyService;
+        currentRates = currencyService.getCurrentRates();
+        yesterdayRates = currencyService.getYesterdayRates();
+    }
 
     @Override
     public byte[] getGifByCurrency(String currency) {
@@ -48,21 +56,21 @@ public class GifServiceImpl implements GifService {
     }
 
     private Double currencyDifference(String currency) {
-        CurrencyRate currentRates = currencyProxy.getCurrentRates();
-        String yesterday = getYesterday();
-        CurrencyRate yesterdayRates = currencyProxy.getRatesForDate(yesterday);
-
         Double currentRate = currentRates.getRates().get(currency);
         Double yesterdayRate = yesterdayRates.getRates().get(currency);
 
         return currentRate - yesterdayRate;
     }
 
-    private String getYesterday() {
-        Instant now = Instant.now();
-        Instant yesterday = now.minus(1, ChronoUnit.DAYS);
-        Date myDate = Date.from(yesterday);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(myDate);
+    @Scheduled(fixedRate = 1000 * 60 * 60)
+    private void updateCurrentRates() {
+        currentRates = currencyService.getCurrentRates();
+        System.out.println("updateCurrentRates");
+    }
+
+    @Scheduled(cron = "1 0 0 * * ?")
+    private void updateYesterdayRatesRates() {
+        yesterdayRates = currencyService.getYesterdayRates();
+        System.out.println("updateYesterdayRatesRates");
     }
 }

@@ -1,9 +1,9 @@
 package com.exchange.rate.model.service.impl;
 
-import com.exchange.rate.client.CurrencyRateClient;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
+import com.exchange.rate.model.service.CurrencyService;
 import com.exchange.rate.util.FileManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class GifServiceImplTest {
     @Mock
     FileManager fileManager;
     @Mock
-    CurrencyRateClient currencyProxy;
+    CurrencyService currencyService;
     @Mock
     GifApiClient gifApiProxy;
     @Mock
@@ -56,12 +56,12 @@ class GifServiceImplTest {
     @DisplayName("should return rich gif when rate increased")
     void shouldReturnRichGifWhenRateIncreased() {
         when(currencyValidator.checkString(anyString())).thenReturn(true);
-
         CurrencyRate todayCurrencyRate = createCurrencyRate(13.0);
         CurrencyRate yesterdayCurrencyRate = createCurrencyRate(12.0);
 
-        when(currencyProxy.getCurrentRates()).thenReturn(todayCurrencyRate);
-        when(currencyProxy.getRatesForDate(anyString())).thenReturn(yesterdayCurrencyRate);
+        when(currencyService.getCurrentRates()).thenReturn(todayCurrencyRate);
+        when(currencyService.getYesterdayRates()).thenReturn(yesterdayCurrencyRate);
+
 
         Map<String, Object> gifJson = createGifJson("11");
         when(gifApiProxy.getGifByTag("broke")).thenReturn(gifJson);
@@ -81,8 +81,8 @@ class GifServiceImplTest {
         CurrencyRate todayCurrencyRate = createCurrencyRate(11.0);
         CurrencyRate yesterdayCurrencyRate = createCurrencyRate(12.0);
 
-        when(currencyProxy.getCurrentRates()).thenReturn(todayCurrencyRate);
-        when(currencyProxy.getRatesForDate(anyString())).thenReturn(yesterdayCurrencyRate);
+        when(currencyService.getCurrentRates()).thenReturn(todayCurrencyRate);
+        when(currencyService.getYesterdayRates()).thenReturn(yesterdayCurrencyRate);
 
         Map<String, Object> gifJson = createGifJson("11");
         when(gifApiProxy.getGifByTag("rich")).thenReturn(gifJson);
