@@ -3,15 +3,16 @@ package com.exchange.rate.model.service.impl;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
-import com.exchange.rate.model.service.CurrencyService;
+import com.exchange.rate.model.service.CurrencyRateCache;
 import com.exchange.rate.model.service.GifService;
 import com.exchange.rate.util.FileManager;
 
-import org.springframework.scheduling.annotation.Scheduled;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@AllArgsConstructor
 @Service
 public class GifServiceImpl implements GifService {
     private static final String WRONG_GIF = "static/wrong.gif";
@@ -19,20 +20,7 @@ public class GifServiceImpl implements GifService {
     private final GifApiClient gifApiProxy;
     private final GifClient gifProxy;
     private final CurrencyValidator currencyValidator;
-    private final CurrencyService currencyService;
-    private CurrencyRate currentRates;
-    private CurrencyRate yesterdayRates;
-
-    public GifServiceImpl(FileManager fileManager, GifApiClient gifApiProxy, GifClient gifProxy,
-                          CurrencyValidator currencyValidator, CurrencyService currencyService) {
-        this.fileManager = fileManager;
-        this.gifApiProxy = gifApiProxy;
-        this.gifProxy = gifProxy;
-        this.currencyValidator = currencyValidator;
-        this.currencyService = currencyService;
-        currentRates = currencyService.getCurrentRates();
-        yesterdayRates = currencyService.getYesterdayRates();
-    }
+    private final CurrencyRateCache currencyRateCache;
 
     @Override
     public byte[] getGifByCurrency(String currency) {
@@ -56,21 +44,12 @@ public class GifServiceImpl implements GifService {
     }
 
     private Double currencyDifference(String currency) {
+        CurrencyRate currentRates = currencyRateCache.getCachedCurrentRates();
+        CurrencyRate yesterdayRates = currencyRateCache.getCachedYesterdayRates();
+
         Double currentRate = currentRates.getRates().get(currency);
         Double yesterdayRate = yesterdayRates.getRates().get(currency);
 
         return currentRate - yesterdayRate;
-    }
-
-    @Scheduled(fixedRate = 1000 * 60 * 60)
-    private void updateCurrentRates() {
-        currentRates = currencyService.getCurrentRates();
-        System.out.println("updateCurrentRates");
-    }
-
-    @Scheduled(cron = "1 0 0 * * ?")
-    private void updateYesterdayRatesRates() {
-        yesterdayRates = currencyService.getYesterdayRates();
-        System.out.println("updateYesterdayRatesRates");
     }
 }

@@ -3,7 +3,7 @@ package com.exchange.rate.model.service.impl;
 import com.exchange.rate.client.GifApiClient;
 import com.exchange.rate.client.GifClient;
 import com.exchange.rate.model.entity.CurrencyRate;
-import com.exchange.rate.model.service.CurrencyService;
+import com.exchange.rate.model.service.CurrencyRateCache;
 import com.exchange.rate.util.FileManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class GifServiceImplTest {
     @Mock
     FileManager fileManager;
     @Mock
-    CurrencyService currencyService;
+    CurrencyRateCache currencyRateCache;
     @Mock
     GifApiClient gifApiProxy;
     @Mock
@@ -59,8 +59,8 @@ class GifServiceImplTest {
         CurrencyRate todayCurrencyRate = createCurrencyRate(13.0);
         CurrencyRate yesterdayCurrencyRate = createCurrencyRate(12.0);
 
-        when(currencyService.getCurrentRates()).thenReturn(todayCurrencyRate);
-        when(currencyService.getYesterdayRates()).thenReturn(yesterdayCurrencyRate);
+        when(currencyRateCache.getCachedCurrentRates()).thenReturn(todayCurrencyRate);
+        when(currencyRateCache.getCachedYesterdayRates()).thenReturn(yesterdayCurrencyRate);
 
 
         Map<String, Object> gifJson = createGifJson("11");
@@ -81,8 +81,8 @@ class GifServiceImplTest {
         CurrencyRate todayCurrencyRate = createCurrencyRate(11.0);
         CurrencyRate yesterdayCurrencyRate = createCurrencyRate(12.0);
 
-        when(currencyService.getCurrentRates()).thenReturn(todayCurrencyRate);
-        when(currencyService.getYesterdayRates()).thenReturn(yesterdayCurrencyRate);
+        when(currencyRateCache.getCachedCurrentRates()).thenReturn(todayCurrencyRate);
+        when(currencyRateCache.getCachedYesterdayRates()).thenReturn(yesterdayCurrencyRate);
 
         Map<String, Object> gifJson = createGifJson("11");
         when(gifApiProxy.getGifByTag("rich")).thenReturn(gifJson);
